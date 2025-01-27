@@ -1,0 +1,183 @@
+name: Metrics
+on:
+  # Schedule monthly updates
+  schedule: 
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+  # (optional) Run workflow when pushing on master/main
+  push: {branches: ["master", "main"]}
+jobs:
+  github-activity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lowlighter/metrics@latest
+        with:
+          filename: src/assert/metrics.plugin.activity.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+          user: Charmve
+          config_timezone: Asia/Shanghai
+  
+  github-reactions:
+    runs-on: ubuntu-latest
+    steps:      
+      - name: 🎭 Comment reactions - Comment reactions
+        uses: lowlighter/metrics@master
+        with:
+          filename: src/assert/metrics.plugin.reactions.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ""
+          plugin_reactions: yes
+          plugin_reactions_limit: 100
+          plugin_reactions_details: percentage
+          output_action: none
+          delay: 120
+          user: lowlighter
+          plugins_errors_fatal: yes
+        if: ${{ success() || failure() }}
+  
+  github-sponsorships:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💝 GitHub Sponsorships
+        uses: lowlighter/metrics@latest
+        with:
+          filename: src/assert/metrics.plugin.sponsorships.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ""
+          plugin_sponsorships: yes
+
+      - name: Sponsors
+        if: ${{ success() || failure() }}
+        uses: lowlighter/metrics@master
+        with:
+          filename: src/assert/metrics.sponsors.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ""
+          user: Charmve
+          plugin_sponsors: yes
+          plugin_sponsors_past: yes
+          plugin_sponsors_sections: list
+          plugin_sponsors_size: 32
+          plugins_errors_fatal: yes
+          config_display: large
+          output_action: none
+          delay: 120
+  
+  tweets-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Latest tweets including attachments
+        uses: lowlighter/metrics@latest
+        with:
+          filename: src/assert/metrics.plugin.tweets.attachments.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_tweets: yes
+          plugin_tweets_token: ${{ secrets.TWITTER_TOKEN }}
+          plugin_tweets_attachments: yes
+          plugin_tweets_user: github
+          plugin_tweets_limit: 2
+      
+      - name: 🐤 Latest tweets
+        uses: lowlighter/metrics@latest
+        with:
+          filename: src/assert/metrics.plugin.tweets.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_tweets: yes
+          plugin_tweets_token: ${{ secrets.TWITTER_TOKEN }}
+          plugin_tweets_user: github
+
+  github-skyline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lowlighter/metrics@latest
+        with:
+          filename: src/assert/metrics.plugin.skyline.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_skyline: yes
+          plugin_skyline_year: 2020
+          plugin_skyline_frames: 6
+          plugin_skyline_quality: 1
+
+  github-skyline-city:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lowlighter/metrics@latest
+        with:
+          filename: src/assert/metrics.plugin.skyline.city.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_skyline: yes
+          plugin_skyline_year: 2020
+          plugin_skyline_frames: 6
+          plugin_skyline_quality: 1
+          plugin_skyline_settings: |
+            {
+              "url": "https://honzaap.github.io/GithubCity?name=${login}&year=${year}",
+              "ready": "[...document.querySelectorAll('.display-info span')].map(span => span.innerText).includes('${login}')",
+              "wait": 4,
+              "hide": ".github-corner, .footer-link, .buttons-options, .mobile-rotate, .display-info span:first-child"
+            }
+ 
+  github-topics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📌 Starred topics - Labels
+        uses: lowlighter/metrics@master
+        with:
+          filename: src/assert/metrics.plugin.topics1.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_topics: yes
+          plugin_topics_limit: 12
+          output_action: none
+          user: lowlighter
+          plugins_errors_fatal: yes
+        if: ${{ success() || failure() }}
+  
+  github-topics2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Labels
+        uses: lowlighter/metrics@latest
+        with:
+          filename: src/assert/metrics.plugin.topics.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_topics: yes
+          plugin_topics_limit: 12
+
+  leetcode-progress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🗳️ Leetcode - LeetCode
+        uses: lowlighter/metrics@master
+        with:
+          filename: src/assert/metrics.plugin.leetcode.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_leetcode: yes
+          plugin_leetcode_sections: solved, skills, recent
+          output_action: none
+          user: yida-zhang
+          plugins_errors_fatal: yes
+        if: ${{ success() || failure() }}
+    
+  stock-price-feeds:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💹 Stock prices - Stock prices from Tesla
+        uses: lowlighter/metrics@master
+        with:
+          filename: src/assert/metrics.plugin.stock.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_stock: yes
+          plugin_stock_token: ${{ secrets.STOCK_TOKEN }}
+          plugin_stock_symbol: TSLA
+          output_action: none
+          user: lowlighter
+          plugins_errors_fatal: yes
+        if: ${{ success() || failure() }}

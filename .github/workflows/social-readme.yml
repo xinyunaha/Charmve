@@ -1,0 +1,22 @@
+name: Social Readme
+
+on:
+  watch:
+    types: started
+  schedule:
+    - cron: '0 13 * * 4' # 13:00 every Thu
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Charmve/Social-Readme@main
+        with:
+          brain_rss_link: https://distill.pub/rss.xml
+          brain_limit: 7
+          blog_rss_link: https://medium.com/feed/@charmve
+          blog_limit: 5 # blog数量
+          douban_name: charmve
+          douban_limit: 5 # 豆瓣最新动态数量
+          commit_message: Updated social rss by social-readme # commit说明
